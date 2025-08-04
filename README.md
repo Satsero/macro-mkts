@@ -1,5 +1,6 @@
 # macro-mkts
 Backtesting and research of macro, momentum, and event-driven strategies. Includes cross-asset signal testing, election-based FX event studies, and other data science notebooks.
+Author: Orestas F.
 
 ## Contents
 - `momentum_strats/` - Implementation and backtesting of cross-asset momentum and trend strategies, with dynamic long-short signal construction and performance evaluation. Includes volatility scaling, transaction cost modeling, and CAPM-based factor attribution.
