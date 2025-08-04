@@ -1,0 +1,13 @@
+"""\
+Bocconi Data Science Challenge (2025) – Group project snippet
+
+Objective: predict hotel booking cancellations using a real-world, imbalanced dataset. Target variable: binary (canceled = 2, not canceled = 1).
+Result: our group placed 2nd out of 7+ teams based on prediction accuracy on a held-out 2017 test set.
+
+Contributions:
+- initial data preprocessing and feature handling (categorical encoding, standardization)
+- helped on design and implementation of LASSO logistic regression model
+- interpreted key coefficients and writeup of final submission
+
+NOTE: only selected code snippets are included here due to shared group ownership and course restrictions. Full codebase not open-sourced.
+"""
