@@ -1,5 +1,6 @@
 # macro-mkts
 Backtesting and research of macro, momentum, and event-driven strategies. Includes cross-asset signal testing, election-based FX event studies, and other data science notebooks.
+
 Author: Orestas F.
 
 ## Contents
