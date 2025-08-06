@@ -58,7 +58,7 @@ def select_strategy_portfolios(port_df):
     return ['SMALL LoPRIOR', 'SMALL HiPRIOR', 'BIG LoPRIOR', 'BIG HiPRIOR']
 
 def calculate_momentum_score(port_df, lookback=6):
-    """as expained in the report's strategy methodology section - this function calculate momentum scores for selected portfolios"""
+    """function calculate momentum scores for selected portfolios"""
     portfolios = select_strategy_portfolios(port_df)
     
     momentum_scores = pd.DataFrame(index=port_df.index)
