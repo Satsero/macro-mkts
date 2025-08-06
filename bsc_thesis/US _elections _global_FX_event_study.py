@@ -1,5 +1,4 @@
-"""
-FX market reaction to US elections based on bilateral trade-dependencies | event study -- Python implementation
+""" FX market reaction to US elections based on bilateral trade-dependencies | event study -- Python implementation
 
 Institution: Bocconi University (Thesis, 2025)  
 Title: "Bilateral Trade Exposure and Cross-Sectional Currency Reactions to U.S. Presidential Elections"  
@@ -57,7 +56,7 @@ from scipy.stats import ttest_ind
 import warnings
 warnings.filterwarnings('ignore')
 
-# For regression analysis
+# for regression analysis
 import statsmodels.formula.api as smf
 
 election_dates = {
@@ -82,7 +81,7 @@ def get_dependency_groups(election_date):
     """
     election_year = pd.to_datetime(election_date).year
     
-    # Trade dependency classifications by election year (computed separately and plugged in lists below)
+    # trade dependency classifications by election year (computed separately and plugged in lists below)
     trade_dependency_groups = {
         2024: {
             'high': ['CADUSD', 'MXNUSD', 'CNYUSD', 'EURUSD'],
@@ -169,10 +168,8 @@ ANALYSIS_WINDOWS = {
 
 
 def match_columns_for_group(df_cols, group_currencies):
-    """
-    Return a list of column names from df_cols that match any currency in group_currencies
-    via partial substring matching. E.g., 'CADUSD' in 'CADUSD Curncy'.
-    """
+    """ Return list of column names from df_cols that match any currency in group_currencies
+    - tried partial substring matching.    """
     valid_cols = []
     for c in df_cols:
         c_clean = c.replace(' ', '').upper()
@@ -184,11 +181,9 @@ def match_columns_for_group(df_cols, group_currencies):
 
 
 def calculate_window_returns_explicit(df, event_date, window):
-    """
-    calculates_window_returns that:
-    1) Explicitly logs when an exact date match isn't found
-    2) Returns the actual event date used for reference
-    3) Ensures consistent window sizes even with edge effects
+    """ 1) Explicitly logs when an exact date match isn't found
+    2) Return  actual event date used for ref
+    3) Ensures consistent window sizes even w/ edge effects
     """
     df = df.sort_index()
     
@@ -228,7 +223,7 @@ def calculate_window_returns_explicit(df, event_date, window):
     offsets = row_indices - event_date_loc
     out_df.index = offsets
     
-    # Create full range and reindex to ensure consistent window sizes
+    # build full range and reindex to ensure consistent window sizes
     full_range = range(-window, window + 1)
     out_df = out_df.reindex(full_range)
     
@@ -236,8 +231,7 @@ def calculate_window_returns_explicit(df, event_date, window):
 
 
 def calculate_group_returns_multi_window_consistent(df, dependency_type, filter_func=None):
-    """
-    Enhanced version that ensures consistent window sizes and logs date alignment issues
+    """ enhanced version whih ensures consistent window sizes and logs date alignment issues
     """
     global election_dates
     
@@ -272,15 +266,14 @@ def calculate_group_returns_multi_window_consistent(df, dependency_type, filter_
                 dates_used.append((date_str, actual_date))
         
         if window_returns:
-            # Check for window completeness
+            # window completeness checl
             complete_windows = []
             for w_ret in window_returns:
-                # Only include series that have complete windows (-w to +w)
+                # only include series that have complete windows (-w to +w)
                 if -w_size in w_ret.index and w_size in w_ret.index:
                     complete_windows.append(w_ret)
                 else:
-                    # Uncomment for debugging
-                    # print(f"Warning: Incomplete window detected for {w_name}, skipping--")
+                    # for debugging-- print(f"Warning: Incomplete window detected for {w_name}, skipping--")
                     pass
             
             if complete_windows:
@@ -310,8 +303,7 @@ def count_elections(filter_func=None):
 
 
 def compute_endpoint_stats(series_cum, window_size):
-    """
-    Calculate stats using only the endpoint values (-window_size and +window_size).
+    """ calculate stats using only the endpoint values (-window_size and +window_size).
     Also collect vol from all pre/post days for context.
     """
     if series_cum.empty or -window_size not in series_cum.index or window_size not in series_cum.index:
@@ -331,7 +323,7 @@ def compute_endpoint_stats(series_cum, window_size):
     post_endpoint = series_cum.loc[window_size]
     difference = post_endpoint - pre_endpoint
     
-    #  pre/post values for volatility
+    #  pre/post values for vol
     pre_vals = series_cum[series_cum.index < 0].dropna()
     post_vals = series_cum[series_cum.index > 0].dropna()
     
@@ -404,9 +396,7 @@ def plot_analysis(df, filter_func=None, title_suffix="", ax=None):
 
 
 def print_stats_tables_endpoints(df):
-    """
-    Print statistics tables using endpoint values rather than avgs
-    """
+    """ print statistics tables using endpoint values rather than avgs """
     print("\n=== COMPACT TABLES WITH PRE-/POST-STATS (ENDPOINT VALUES) ===\n")
 
     scenario_sets = {
@@ -588,14 +578,13 @@ def calculate_avg_returns_all(df, filter_func, window='Long'):
 
 
 def print_spread_analysis_all_windows(df):
-    """
-    Comp avg NCR for different partisan and expectation scenarios, and print the spreads for each window size defined in ANALYSIS_WINDOWS.
-    Both pre-event (at t = -window) and post-event (at t = +window) results shown.
+    """ Comp avg NCR for different partisan and expectation scenarios, and print the spreads for each window size defined in ANALYSIS_WINDOWS.
+    Both pre-event (at t = -window) and post-event (at t = +window) results shown
     """
     for window_name, window_size in ANALYSIS_WINDOWS.items():
         print(f"\n=== Spread Analysis ({window_name} Window) ===\n")
         
-        # Pre-event at offset = -window_size
+        # pre-event at offset = -window_size
         overall_pre = calculate_avg_returns_all(df, filter_func=None, window=window_name)
         dem_pre = calculate_avg_returns_all(df, filter_func=lambda party, expectation: party == 'Democratic', window=window_name)
         rep_pre = calculate_avg_returns_all(df, filter_func=lambda party, expectation: party == 'Republican', window=window_name)
@@ -680,8 +669,7 @@ def check_event_date_alignments(df):
 
 
 def compare_pre_post_calculations(df):
-    """
-    This function demonstrates the dif between: taking the avg of all pre-election days (-w to -1) and taking just the value at the start of the window (-w)
+    """ function demonstrates the dif between: taking the avg of all pre-election days (-w to -1) and taking just the value at the start of the window (-w)
     helps verify if interpretation issues arise from the avging approach
     """
     print("\n=== COMPARISON OF CALCULATION METHODS ===\n")
